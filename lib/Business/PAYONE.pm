@@ -11,7 +11,7 @@ package Business::PAYONE {
     use version;
     use v5.36;
 
-    our $VERSION = qv("v0.3.0");
+    our $VERSION = qv("v0.1.0");
 
     has ua => (
         is => 'ro',
@@ -156,17 +156,50 @@ Business::PAYONE - Perl library for PAYONE online payment system
 
 =head1 SYNOPSIS
 
-    use Business::PAYONE;
+    user Business::PAYONE;
+    my $po = Business::PAYONE->new({
+        endpoint_host   => 'https://payment.preprod.payone.com',
+        PSPID           => 'MyPSPID',
+        api_key         => 'xxxxxxxxxxxxxxxxxx',
+        api_secret      => 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+    });
 
-    # TODO
+    # Create hosted checkout
+    my $pores = $po->CreateHostedCheckout({
+        amount              => 290.40,
+        currencyCode        => 'EUR',
+        merchantReference   => 'XD542SS',
+        returnUrl           => 'https://my_site_postpay_page/',
+    });
+
+    # Store the checkoutid we need later to retrieve transaction result
+    my $payone_checkoutid = $pores->{hostedCheckoutId};
+
+    # Get the URL and then redirect user to it for payment
+    my $redirect_url = $pores->{redirectUrl};
+    # Do redirection...
+
+    # Then when user comes back to returnURL...
+
+    # Verifiy transaction
+    my $pores = $po->GetHostedCheckoutStatus({
+        checkoutId => $payone_checkoutid,
+    });
+    my $status = $pores->{status};
+
+    if ( $status eq 'PAYMENT_CREATED' && $pores->{createdPaymentOutput}->{payment}->{status} eq 'CAPTURED' ) {
+        # Success
+    }
 
 =head1 DESCRIPTION
 
-This is HIGHLY EXPERIMENTAL and in the works, do not use for now.
+This is HIGHLY EXPERIMENTAL and in the works, do not use for now. It currently only support I<HostedCheckout> (partially).
 
 I plan to work on this module if there is interest.
 
+=head1 REPOSITORY
 
+GitHub repository: L<https://github.com/mc7244/Business-PAYONE>
 
 =head1 AUTHOR
 
