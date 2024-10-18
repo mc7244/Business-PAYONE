@@ -1,0 +1,7 @@
+This file documents the revision history for Business::PAYONE
+
+2024-10-18
+  - fixed missing dependency
+
+2024-10-16
+  - initial release

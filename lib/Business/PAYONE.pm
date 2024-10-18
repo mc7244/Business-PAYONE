@@ -11,7 +11,7 @@ package Business::PAYONE {
     use version;
     use v5.36;
 
-    our $VERSION = qv("v0.1.0");
+    our $VERSION = qv("v0.2.0");
 
     has ua => (
         is => 'ro',
